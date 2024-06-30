@@ -3,23 +3,20 @@
 import subprocess
 import optparse
 
-# Create the option juggler
-optionJuggler = optparse.OptionParser()
 
-# Add options for the network interface and new MAC address
-optionJuggler.add_option("-i", "--network-interface", dest="netInterface", help="Network interface to change its Ether ID")
-optionJuggler.add_option("-m", "--mac-alias", dest="macAlias", help="New MAC address")
+def fetch_options():
+    option_juggler = optparse.OptionParser()
+    option_juggler.add_option("-i", "--interface", dest="net_interface", help="Network interface to change its MAC")
+    option_juggler.add_option("-m", "--mac", dest="mac_alias", help="New MAC address")
+    return option_juggler.parse_args()
 
-# Parse the command-line arguments
-(macOptions, arguments) = optionJuggler.parse_args()
 
-netInterface = macOptions.netInterface
-macAlias = macOptions.macAlias
+def mac_morph(net_interface, mac_alias):
+    print("[+] Misdirecting Ether ID for " + net_interface + " to " + mac_alias)
+    subprocess.call(["ifconfig", net_interface, "down"])
+    subprocess.call(["ifconfig", net_interface, "hw", "ether", mac_alias])
+    subprocess.call(["ifconfig", net_interface, "up"])
 
-# Display the change operation
-print("[+] Misdirecting Ether ID for " + netInterface + " to " + macAlias)
 
-# Execute the commands to change the MAC address
-subprocess.call(["ifconfig", netInterface, "down"])
-subprocess.call(["ifconfig", netInterface, "hw", "ether", macAlias])
-subprocess.call(["ifconfig", netInterface, "up"])
+(mac_options, arguments) = fetch_options()
+mac_morph(mac_options.net_interface, mac_options.mac_alias)
