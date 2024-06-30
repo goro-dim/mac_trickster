@@ -21,5 +21,5 @@ print("[+] Misdirecting Ether ID for " + netInterface + " to " + macAlias)
 
 # Execute the commands to change the MAC address
 subprocess.call(["ifconfig", netInterface, "down"])
-subprocess.call(["ifconfig", netInterface, "hw ether", macAlias])
+subprocess.call(["ifconfig", netInterface, "hw", "ether", macAlias])
 subprocess.call(["ifconfig", netInterface, "up"])
